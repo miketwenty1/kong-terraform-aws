@@ -528,3 +528,7 @@ variable "db_final_snapshot_identifier" {
   type        = string
   default     = ""
 }
+
+variable "vpn_sg" {
+  type = string
+}

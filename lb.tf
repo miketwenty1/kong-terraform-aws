@@ -367,6 +367,10 @@ resource "aws_lb_target_group" "internal-admin" {
     unhealthy_threshold = var.health_check_unhealthy_threshold
   }
 
+  stickiness {
+    type = "lb_cookie"
+    cookie_duration = 1200
+  }
   tags = merge(
     {
       "Name"        = format("%s-%s-internal-admin", var.service, var.environment),

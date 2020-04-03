@@ -433,30 +433,21 @@ resource "aws_security_group" "internal-admin-ssl-lb" {
   )
 }
 
-resource "aws_security_group_rule" "internal-lb-ingress-admin-ssl" {
+resource "aws_security_group_rule" "external-lb-egress-admin-ssl" {
   count = var.enable_internal_admin_lb ? 1 : 0
 
   security_group_id = aws_security_group.internal-admin-ssl-lb.id
 
-  type      = "ingress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
-  self      = true
-}
-resource "aws_security_group_rule" "external-lb-egress-admin-ssl" {
-  security_group_id = aws_security_group.internal-admin-ssl-lb.id
-
-  type      = "egress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
-  self      = true
+  type        = "egress"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
 }
 
 # Internal Admin Non Enterprise Edition
 resource "aws_security_group" "internal-admin-port-lb" {
-  description = "This security group will be used between the load balancer and the kong ec2 nodes to only expose port 8001 with a self referencing "
+  description = "This security group will be used between the load balancer and the kong ec2 nodes to only expose port 8001"
   name        = format("%s-%s-internal-admin-port-lb", var.service, var.environment)
   vpc_id      = data.aws_vpc.vpc.id
 
@@ -474,20 +465,24 @@ resource "aws_security_group" "internal-admin-port-lb" {
 resource "aws_security_group_rule" "internal-lb-ingress-admin-port" {
   count = var.enable_internal_admin_lb ? 1 : 0
 
-  security_group_id = aws_security_group.internal-admin-port-lb.id
+  security_group_id         = aws_security_group.internal-admin-port-lb.id
+  source_security_group_id  = aws_security_group.internal-admin-ssl-lb.id
 
   type      = "ingress"
-  from_port = 8001
-  to_port   = 8001
+  from_port = 443
+  to_port   = 443
   protocol  = "tcp"
-  self      = true
 }
+
 resource "aws_security_group_rule" "internal-lb-egress-admin-port" {
+  count = var.enable_internal_admin_lb ? 1 : 0
+
   security_group_id = aws_security_group.internal-admin-port-lb.id
 
-  type      = "egress"
-  from_port = 8001
-  to_port   = 8001
-  protocol  = "tcp"
-  self      = true
+  type        = "egress"
+  from_port   = 8001
+  to_port     = 8001
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
 }
+
