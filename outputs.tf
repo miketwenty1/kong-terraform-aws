@@ -30,7 +30,7 @@ output "lb_endpoint_internal" {
   value       = coalesce(aws_lb.internal.*.dns_name)
   description = "The internal load balancer endpoint"
 }
-"
+
 output "lb_endpoint_internal-admin" {
   value       = coalesce(aws_lb.internal-admin.*.dns_name)
   description = "The internal load balancer endpoint only for admin access to kong - DO NOT use this output if using Enterprise Edition"
