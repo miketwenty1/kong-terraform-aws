@@ -31,10 +31,10 @@ output "lb_endpoint_internal" {
   description = "The internal load balancer endpoint"
 }
 
-output "lb_endpoint_internal-admin" {
-  value       = coalesce(internal-lb-ingress-admin-ssl.id)
-  description = "The internal load balancer endpoint only for admin access to kong - DO NOT use this output if using Enterprise Edition"
-}
+# output "lb_endpoint_internal-admin" {
+#   value       = coalesce(internal-lb-ingress-admin-ssl.id)
+#   description = "The internal load balancer endpoint only for admin access to kong - DO NOT use this output if using Enterprise Edition"
+# }
 
 output "admin_lb_sg" {
   value       = coalesce(aws_security_group.internal-admin-ssl-lb.id)
