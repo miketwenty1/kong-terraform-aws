@@ -462,7 +462,7 @@ resource "aws_security_group" "internal-admin-port-lb" {
   )
 }
 
-resource "aws_security_group_rule" "internal-lb-ingress-admin" {
+resource "aws_security_group_rule" "internal-lb-ingress-admin-port" {
   count = var.enable_internal_admin_lb ? 1 : 0
 
   security_group_id = aws_security_group.internal-admin-port-lb.id
