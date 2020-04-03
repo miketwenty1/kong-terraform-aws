@@ -326,7 +326,7 @@ resource "aws_lb_listener" "portal" {
 resource "aws_lb" "internal-admin" {
   count = var.enable_internal_lb ? 1 : 0
 
-  name     = format("%s-%s-internal", var.service, var.environment)
+  name     = format("%s-%s-internal-admin", var.service, var.environment)
   internal = true
   subnets  = data.aws_subnet_ids.private.ids
 
