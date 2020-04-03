@@ -353,7 +353,7 @@ resource "aws_lb" "internal-admin" {
 resource "aws_lb_target_group" "internal-admin" {
   count = var.enable_internal_admin_lb ? 1 : 0
 
-  name     = format("%s-%s-admin", var.service, var.environment)
+  name     = format("%s-%s-internal-admin", var.service, var.environment)
   port     = 8001
   protocol = "HTTP"
   vpc_id   = data.aws_vpc.vpc.id
@@ -369,7 +369,7 @@ resource "aws_lb_target_group" "internal-admin" {
 
   tags = merge(
     {
-      "Name"        = format("%s-%s-admin", var.service, var.environment),
+      "Name"        = format("%s-%s-internal-admin", var.service, var.environment),
       "Environment" = var.environment,
       "Description" = var.description,
       "Service"     = var.service,
