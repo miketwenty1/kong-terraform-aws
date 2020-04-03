@@ -330,7 +330,7 @@ resource "aws_lb" "internal-admin" {
   internal = true
   subnets  = data.aws_subnet_ids.private.ids
 
-  security_groups = [aws_security_group.internal-lb.id] 333333333333333asdfasdfasdfasdf23er2323
+  security_groups = [aws_security_group.internal-admin-ssl-lb.id, aws_security_group.internal-admin-port-lb.id]
 
   enable_deletion_protection = var.enable_deletion_protection
   idle_timeout               = var.idle_timeout
