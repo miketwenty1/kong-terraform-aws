@@ -444,6 +444,15 @@ resource "aws_security_group_rule" "internal-lb-ingress-admin-ssl" {
   protocol  = "tcp"
   self      = true
 }
+resource "aws_security_group_rule" "external-lb-egress-admin-ssl" {
+  security_group_id = aws_security_group.internal-admin-ssl-lb.id
+
+  type      = "egress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+  self      = true
+}
 
 # Internal Admin Non Enterprise Edition
 resource "aws_security_group" "internal-admin-port-lb" {
@@ -468,6 +477,15 @@ resource "aws_security_group_rule" "internal-lb-ingress-admin-port" {
   security_group_id = aws_security_group.internal-admin-port-lb.id
 
   type      = "ingress"
+  from_port = 8001
+  to_port   = 8001
+  protocol  = "tcp"
+  self      = true
+}
+resource "aws_security_group_rule" "internal-lb-egress-admin-port" {
+  security_group_id = aws_security_group.internal-admin-port-lb.id
+
+  type      = "egress"
   from_port = 8001
   to_port   = 8001
   protocol  = "tcp"
