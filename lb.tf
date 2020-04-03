@@ -361,8 +361,8 @@ resource "aws_lb_target_group" "internal-admin" {
   health_check {
     healthy_threshold   = var.health_check_healthy_threshold
     interval            = var.health_check_interval
-    path                = "/status"
-    port                = 8000
+    path                = "/"
+    port                = 8001
     timeout             = var.health_check_timeout
     unhealthy_threshold = var.health_check_unhealthy_threshold
   }
