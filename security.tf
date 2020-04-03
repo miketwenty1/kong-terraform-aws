@@ -474,6 +474,18 @@ resource "aws_security_group_rule" "internal-lb-ingress-admin-port" {
   protocol  = "tcp"
 }
 
+resource "aws_security_group_rule" "internal-lb-ingress-admin-port-self" {
+  count = var.enable_internal_admin_lb ? 1 : 0
+
+  security_group_id         = aws_security_group.internal-admin-port-lb.id
+
+  self      = true
+  type      = "ingress"
+  from_port = 8001
+  to_port   = 8001
+  protocol  = "tcp"
+}
+
 resource "aws_security_group_rule" "internal-lb-egress-admin-port" {
   count = var.enable_internal_admin_lb ? 1 : 0
 
