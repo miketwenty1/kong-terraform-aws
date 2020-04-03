@@ -415,3 +415,61 @@ resource "aws_security_group_rule" "internal-lb-egress-portal" {
 
   source_security_group_id = aws_security_group.kong.id
 }
+
+# Internal Admin Non Enterprise Edition
+resource "aws_security_group" "internal-admin-ssl-lb" {
+  description = "This security group will be sent to outputs and used with other AWS resources that need access to the internal admin lb."
+  name        = format("%s-%s-internal-admin-lb", var.service, var.environment)
+  vpc_id      = data.aws_vpc.vpc.id
+
+  tags = merge(
+    {
+      "Name"        = format("%s-%s-internal-admin-ssl-lb", var.service, var.environment),
+      "Environment" = var.environment,
+      "Description" = var.description,
+      "Service"     = var.service,
+    },
+    var.tags
+  )
+}
+
+resource "aws_security_group_rule" "internal-lb-ingress-admin-ssl" {
+  count = var.enable_internal_admin_lb ? 1 : 0
+
+  security_group_id = aws_security_group.internal-admin-ssl-lb.id
+
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+  self      = true
+}
+
+# Internal Admin Non Enterprise Edition
+resource "aws_security_group" "internal-admin-port-lb" {
+  description = "This security group will be used between the load balancer and the kong ec2 nodes to only expose port 8001 with a self referencing "
+  name        = format("%s-%s-internal-admin-port-lb", var.service, var.environment)
+  vpc_id      = data.aws_vpc.vpc.id
+
+  tags = merge(
+    {
+      "Name"        = format("%s-%s-internal-admin-port-lb", var.service, var.environment),
+      "Environment" = var.environment,
+      "Description" = var.description,
+      "Service"     = var.service,
+    },
+    var.tags
+  )
+}
+
+resource "aws_security_group_rule" "internal-lb-ingress-admin" {
+  count = var.enable_internal_admin_lb ? 1 : 0
+
+  security_group_id = aws_security_group.internal-admin-port-lb.id
+
+  type      = "ingress"
+  from_port = 8001
+  to_port   = 8001
+  protocol  = "tcp"
+  self      = true
+}

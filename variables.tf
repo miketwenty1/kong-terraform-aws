@@ -262,6 +262,14 @@ variable "enable_internal_lb" {
   default = true
 }
 
+variable "enable_internal_admin_lb" {
+  description = "Boolean to enable/create the internal load balancer for the forward proxy for admin port - Do NOT enable this if also using enterprise edition ee"
+  type        = bool
+
+  default = false
+}
+
+
 variable "deregistration_delay" {
   description = "Seconds to wait before changing the state of a deregistering target from draining to unused"
   type        = string
