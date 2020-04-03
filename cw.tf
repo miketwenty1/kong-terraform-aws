@@ -21,3 +21,15 @@ module "kong_internal_lb_cw" {
   http_4xx_count     = var.http_4xx_count
   http_5xx_count     = var.http_5xx_count
 }
+
+module "kong_internal_admin_lb_cw" {
+  source = "./cw/lb"
+
+  enable        = var.enable_internal_admin_lb
+  load_balancer = coalesce(join("", aws_lb.internal-admin.*.arn_suffix), "none")
+  target_group  = coalesce(join("", aws_lb_target_group.internal-admin.*.arn), "none")
+
+  cloudwatch_actions = var.cloudwatch_actions
+  http_4xx_count     = var.http_4xx_count
+  http_5xx_count     = var.http_5xx_count
+}

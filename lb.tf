@@ -350,7 +350,7 @@ resource "aws_lb" "internal-admin" {
 }
 
 # Internal Admin exposed
-resource "aws_lb_target_group" "admin-non-ee" {
+resource "aws_lb_target_group" "internal-admin" {
   count = var.enable_internal_admin_lb ? 1 : 0
 
   name     = format("%s-%s-admin", var.service, var.environment)
@@ -378,7 +378,7 @@ resource "aws_lb_target_group" "admin-non-ee" {
   )
 }
 
-resource "aws_lb_listener" "admin-non-ee" {
+resource "aws_lb_listener" "internal-admin" {
   count = var.enable_internal_admin_lb ? 1 : 0
 
   load_balancer_arn = aws_lb.internal-admin[0].arn
@@ -389,7 +389,7 @@ resource "aws_lb_listener" "admin-non-ee" {
   certificate_arn = data.aws_acm_certificate.internal-cert.arn
 
   default_action {
-    target_group_arn = aws_lb_target_group.admin-non-ee[0].arn
+    target_group_arn = aws_lb_target_group.internal-admin[0].arn
     type             = "forward"
   }
 }
