@@ -536,3 +536,7 @@ variable "vpn_sg" {
 variable "gitlab_sg" {
   type = string
 }
+
+variable "certificate_arn" {
+  type = string
+}

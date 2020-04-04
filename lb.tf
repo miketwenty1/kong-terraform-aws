@@ -389,7 +389,7 @@ resource "aws_lb_listener" "internal-admin" {
   protocol          = "HTTPS"
 
   ssl_policy      = var.ssl_policy
-  certificate_arn = data.aws_acm_certificate.internal-cert.arn
+  certificate_arn = var.certificate_arn
 
   default_action {
     target_group_arn = aws_lb_target_group.internal-admin[0].arn
