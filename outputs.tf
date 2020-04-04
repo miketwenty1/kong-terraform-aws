@@ -36,7 +36,7 @@ output "lb_endpoint_internal-admin" {
   description = "The internal load balancer endpoint only for admin access to kong - DO NOT use this output if using Enterprise Edition"
 }
 
-output "kong_admin_service_lb_sg" {
+output "admin_service_lb_sg" {
   value       = coalesce(aws_security_group.admin_service_lb_access.id) 
   description = "The internal load balancer security group any AWS resource that wants access to the admin load balancer will need this sg"
 }
