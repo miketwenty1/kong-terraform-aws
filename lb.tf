@@ -331,8 +331,7 @@ resource "aws_lb" "internal-admin" {
   subnets  = data.aws_subnet_ids.private.ids
 
   security_groups = [
-    aws_security_group.internal-admin-ssl-lb.id, 
-    aws_security_group.internal-admin-port-lb.id
+    aws_security_group.internal_admin_lb.id
   ]
 
   enable_deletion_protection = var.enable_deletion_protection

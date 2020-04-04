@@ -532,3 +532,7 @@ variable "db_final_snapshot_identifier" {
 variable "vpn_sg" {
   type = string
 }
+
+variable "gitlab_sg" {
+  type = string
+}

@@ -93,6 +93,110 @@ resource "aws_security_group" "kong" {
   )
 }
 
+# Internal Admin Non Enterprise Edition - ACCESS
+resource "aws_security_group" "admin_service_lb_access" {
+  description = "This security group will be sent to outputs and used with other AWS resources that need access to the internal admin lb."
+  name        = format("%s-%s-admin-service-lb", var.service, var.environment)
+  vpc_id      = data.aws_vpc.vpc.id
+
+  tags = merge(
+    {
+      "Name"        = format("%s-%s-admin-service-lb", var.service, var.environment),
+      "Environment" = var.environment,
+      "Description" = var.description,
+      "Service"     = var.service,
+    },
+    var.tags
+  )
+}
+
+# Internal Admin Non Enterprise Edition - LB
+resource "aws_security_group" "internal_admin_lb" {
+  description = "This security group will be used between the load balancer and the kong ec2 nodes to only expose port 8001"
+  name        = format("%s-%s-internal-admin-port-lb", var.service, var.environment)
+  vpc_id      = data.aws_vpc.vpc.id
+
+  tags = merge(
+    {
+      "Name"        = format("%s-%s-internal-admin-port-lb", var.service, var.environment),
+      "Environment" = var.environment,
+      "Description" = var.description,
+      "Service"     = var.service,
+    },
+    var.tags
+  )
+}
+
+
+### rules for admin sgs
+resource "aws_security_group_rule" "egress-admin-service-access" {
+  count = var.enable_internal_admin_lb ? 1 : 0
+
+  security_group_id         = aws_security_group.admin_service_lb_access.id
+  source_security_group_id  = aws_security_group.internal_admin_lb.id
+
+  type        = "egress"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+}
+### rules for admin sgs
+resource "aws_security_group_rule" "ingress-admin-lb-ssl" {
+  count = var.enable_internal_admin_lb ? 1 : 0
+
+  security_group_id         = aws_security_group.internal_admin_lb.id
+  source_security_group_id  = aws_security_group.admin_service_lb_access.id
+
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+}
+resource "aws_security_group_rule" "ingress-admin-lb-vpn" {
+  count = var.enable_internal_admin_lb ? 1 : 0
+
+  security_group_id         = aws_security_group.internal_admin_lb.id
+  source_security_group_id  = var.vpn_sg
+
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+}
+resource "aws_security_group_rule" "ingress-admin-lb-gitlab" {
+  count = var.enable_internal_admin_lb ? 1 : 0
+
+  security_group_id         = aws_security_group.internal_admin_lb.id
+  source_security_group_id  = var.gitlab_sg
+
+  type      = "ingress"
+  from_port = 443
+  to_port   = 443
+  protocol  = "tcp"
+}
+resource "aws_security_group_rule" "egress-admin-lb-ssl" {
+  count = var.enable_internal_admin_lb ? 1 : 0
+
+  security_group_id         = aws_security_group.internal_admin_lb.id
+  source_security_group_id  = aws_security_group.kong.id 
+
+  type        = "egress"
+  from_port   = 8001
+  to_port     = 8001
+  protocol    = "tcp"
+}
+resource "aws_security_group_rule" "admin-ingress-lb" {
+  count = var.enable_internal_admin_lb ? 1 : 0
+
+  security_group_id         = aws_security_group.kong.id
+  source_security_group_id  = aws_security_group.internal_admin_lb.id
+  
+  type      = "ingress"
+  from_port = 8001
+  to_port   = 8001
+  protocol  = "tcp"
+}
+
 resource "aws_security_group_rule" "admin-ingress-bastion" {
   security_group_id = aws_security_group.kong.id
 
@@ -415,86 +519,3 @@ resource "aws_security_group_rule" "internal-lb-egress-portal" {
 
   source_security_group_id = aws_security_group.kong.id
 }
-
-# Internal Admin Non Enterprise Edition
-resource "aws_security_group" "internal-admin-ssl-lb" {
-  description = "This security group will be sent to outputs and used with other AWS resources that need access to the internal admin lb."
-  name        = format("%s-%s-internal-admin-lb", var.service, var.environment)
-  vpc_id      = data.aws_vpc.vpc.id
-
-  tags = merge(
-    {
-      "Name"        = format("%s-%s-internal-admin-ssl-lb", var.service, var.environment),
-      "Environment" = var.environment,
-      "Description" = var.description,
-      "Service"     = var.service,
-    },
-    var.tags
-  )
-}
-
-resource "aws_security_group_rule" "external-lb-egress-admin-ssl" {
-  count = var.enable_internal_admin_lb ? 1 : 0
-
-  security_group_id = aws_security_group.internal-admin-ssl-lb.id
-
-  type        = "egress"
-  from_port   = 443
-  to_port     = 443
-  protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-}
-
-# Internal Admin Non Enterprise Edition
-resource "aws_security_group" "internal-admin-port-lb" {
-  description = "This security group will be used between the load balancer and the kong ec2 nodes to only expose port 8001"
-  name        = format("%s-%s-internal-admin-port-lb", var.service, var.environment)
-  vpc_id      = data.aws_vpc.vpc.id
-
-  tags = merge(
-    {
-      "Name"        = format("%s-%s-internal-admin-port-lb", var.service, var.environment),
-      "Environment" = var.environment,
-      "Description" = var.description,
-      "Service"     = var.service,
-    },
-    var.tags
-  )
-}
-
-resource "aws_security_group_rule" "internal-lb-ingress-admin-port" {
-  count = var.enable_internal_admin_lb ? 1 : 0
-
-  security_group_id         = aws_security_group.internal-admin-port-lb.id
-  source_security_group_id  = aws_security_group.internal-admin-ssl-lb.id
-
-  type      = "ingress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
-}
-
-resource "aws_security_group_rule" "internal-lb-ingress-admin-port-self" {
-  count = var.enable_internal_admin_lb ? 1 : 0
-
-  security_group_id         = aws_security_group.internal-admin-port-lb.id
-
-  self      = true
-  type      = "ingress"
-  from_port = 8001
-  to_port   = 8001
-  protocol  = "tcp"
-}
-
-resource "aws_security_group_rule" "internal-lb-egress-admin-port" {
-  count = var.enable_internal_admin_lb ? 1 : 0
-
-  security_group_id = aws_security_group.internal-admin-port-lb.id
-
-  type        = "egress"
-  from_port   = 8001
-  to_port     = 8001
-  protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-}
-
