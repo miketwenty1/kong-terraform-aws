@@ -22,7 +22,7 @@ output "admin_token" {
 }
 
 output "lb_endpoint_external" {
-  value       = join([], coalesce(aws_lb.external.*.dns_name))
+  value       = coalesce(aws_lb.external.*.dns_name)
   description = "The external load balancer endpoint"
 }
 
