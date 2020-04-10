@@ -36,6 +36,7 @@ resource "aws_ssm_parameter" "ee-license" {
 
   key_id = aws_kms_alias.kong.target_key_arn
 
+  depends_on = [aws_kms_alias.kong]
   lifecycle {
     ignore_changes = [value]
   }
