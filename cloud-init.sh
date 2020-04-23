@@ -101,6 +101,12 @@ pg_user = ${DB_USER}
 pg_password = $DB_PASSWORD
 pg_database = $DB_NAME
 
+# Kong Injected Headers
+headers = off
+
+# Kong Reporting
+anonymous_reports = false
+
 # Load balancer headers
 real_ip_header = X-Forwarded-For
 trusted_ips = 0.0.0.0/0
