@@ -152,28 +152,6 @@ resource "aws_security_group_rule" "ingress-admin-lb-ssl" {
   to_port   = 443
   protocol  = "tcp"
 }
-resource "aws_security_group_rule" "ingress-admin-lb-vpn" {
-  count = var.enable_internal_admin_lb ? 1 : 0
-
-  security_group_id         = aws_security_group.internal_admin_lb.id
-  source_security_group_id  = var.vpn_sg
-
-  type      = "ingress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
-}
-resource "aws_security_group_rule" "ingress-admin-lb-gitlab" {
-  count = var.enable_internal_admin_lb ? 1 : 0
-
-  security_group_id         = aws_security_group.internal_admin_lb.id
-  source_security_group_id  = var.gitlab_sg
-
-  type      = "ingress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
-}
 resource "aws_security_group_rule" "egress-admin-lb-ssl" {
   count = var.enable_internal_admin_lb ? 1 : 0
 
