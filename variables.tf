@@ -529,14 +529,14 @@ variable "db_final_snapshot_identifier" {
   default     = ""
 }
 
-variable "vpn_sg" {
-  type = string
-}
+# variable "vpn_sg" {
+#   type = string
+# }
 
-variable "gitlab_sg" {
-  type = string
-}
+# variable "gitlab_sg" {
+#   type = string
+# }
 
-variable "certificate_arn" {
-  type = string
-}
+# variable "certificate_arn" {
+#   type = string
+# }
