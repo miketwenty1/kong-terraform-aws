@@ -27,13 +27,13 @@ data "aws_subnet_ids" "private" {
   }
 }
 
-# data "aws_security_group" "default" {
-#   vpc_id = data.aws_vpc.vpc.id
+data "aws_security_group" "default" {
+  vpc_id = data.aws_vpc.vpc.id
 
-#   tags = {
-#     "Name" = var.default_security_group
-#   }
-# }
+  tags = {
+    "Name" = var.default_security_group
+  }
+}
 
 data "aws_acm_certificate" "external-cert" {
   domain = var.ssl_cert_external
