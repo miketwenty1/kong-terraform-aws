@@ -6,8 +6,8 @@ resource "aws_launch_configuration" "kong" {
   key_name             = var.ec2_key_name
 
   security_groups = [
-    data.aws_security_group.default.id,
-    aws_security_group.kong.id,
+    # data.aws_security_group.default.id,
+    aws_security_group.kong.id
   ]
 
   associate_public_ip_address = false
