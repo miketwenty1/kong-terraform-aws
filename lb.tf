@@ -332,7 +332,7 @@ resource "aws_lb" "internal-admin" {
 
   security_groups = [
     aws_security_group.admin_service_lb_access.id,
-    aws_security_group.default.id
+    data.aws_security_group.default.id
   ]
 
   enable_deletion_protection = var.enable_deletion_protection
