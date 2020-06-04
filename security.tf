@@ -110,69 +110,17 @@ resource "aws_security_group" "admin_service_lb_access" {
   )
 }
 
-# Internal Admin Non Enterprise Edition - LB
-resource "aws_security_group" "internal_admin_lb" {
-  description = "This security group will be used between the load balancer and the kong ec2 nodes to only expose port 8001"
-  name        = format("%s-%s-internal-admin-port-lb", var.service, var.environment)
-  vpc_id      = data.aws_vpc.vpc.id
-
-  tags = merge(
-    {
-      "Name"        = format("%s-%s-internal-admin-port-lb", var.service, var.environment),
-      "Environment" = var.environment,
-      "Description" = var.description,
-      "Service"     = var.service,
-    },
-    var.tags
-  )
-}
-
-
 ### rules for admin sgs
-resource "aws_security_group_rule" "egress-admin-service-access" {
+resource "aws_security_group_rule" "ingress-admin-service-access" {
   count = var.enable_internal_admin_lb ? 1 : 0
 
-  security_group_id         = aws_security_group.admin_service_lb_access.id
-  source_security_group_id  = aws_security_group.internal_admin_lb.id
+  security_group_id = aws_security_group.admin_service_lb_access.id
+  self              = true
 
-  type        = "egress"
+  type        = "ingress"
   from_port   = 443
   to_port     = 443
   protocol    = "tcp"
-}
-### rules for admin sgs
-resource "aws_security_group_rule" "ingress-admin-lb-ssl" {
-  count = var.enable_internal_admin_lb ? 1 : 0
-
-  security_group_id         = aws_security_group.internal_admin_lb.id
-  source_security_group_id  = aws_security_group.admin_service_lb_access.id
-
-  type      = "ingress"
-  from_port = 443
-  to_port   = 443
-  protocol  = "tcp"
-}
-resource "aws_security_group_rule" "egress-admin-lb-ssl" {
-  count = var.enable_internal_admin_lb ? 1 : 0
-
-  security_group_id         = aws_security_group.internal_admin_lb.id
-  source_security_group_id  = aws_security_group.kong.id 
-
-  type        = "egress"
-  from_port   = 8001
-  to_port     = 8001
-  protocol    = "tcp"
-}
-resource "aws_security_group_rule" "admin-ingress-lb" {
-  count = var.enable_internal_admin_lb ? 1 : 0
-
-  security_group_id         = aws_security_group.kong.id
-  source_security_group_id  = aws_security_group.internal_admin_lb.id
-  
-  type      = "ingress"
-  from_port = 8001
-  to_port   = 8001
-  protocol  = "tcp"
 }
 
 resource "aws_security_group_rule" "admin-ingress-bastion" {
@@ -227,45 +175,6 @@ resource "aws_security_group_rule" "admin-ingress-internal-lb" {
   type      = "ingress"
   from_port = 8001
   to_port   = 8001
-  protocol  = "tcp"
-
-  source_security_group_id = aws_security_group.internal-lb.id
-}
-
-resource "aws_security_group_rule" "manager-ingress-internal-lb" {
-  count = var.enable_ee ? 1 : 0
-
-  security_group_id = aws_security_group.kong.id
-
-  type      = "ingress"
-  from_port = 8002
-  to_port   = 8002
-  protocol  = "tcp"
-
-  source_security_group_id = aws_security_group.internal-lb.id
-}
-
-resource "aws_security_group_rule" "portal-gui-ingress-internal-lb" {
-  count = var.enable_ee ? 1 : 0
-
-  security_group_id = aws_security_group.kong.id
-
-  type      = "ingress"
-  from_port = 8003
-  to_port   = 8003
-  protocol  = "tcp"
-
-  source_security_group_id = aws_security_group.internal-lb.id
-}
-
-resource "aws_security_group_rule" "portal-ingress-internal-lb" {
-  count = var.enable_ee ? 1 : 0
-
-  security_group_id = aws_security_group.kong.id
-
-  type      = "ingress"
-  from_port = 8004
-  to_port   = 8004
   protocol  = "tcp"
 
   source_security_group_id = aws_security_group.internal-lb.id
@@ -385,6 +294,68 @@ resource "aws_security_group_rule" "internal-lb-ingress-proxy-https" {
   cidr_blocks = var.internal_https_cidr_blocks
 }
 
+resource "aws_security_group_rule" "internal-lb-egress-proxy" {
+  security_group_id = aws_security_group.internal-lb.id
+
+  type      = "egress"
+  from_port = 8000
+  to_port   = 8000
+  protocol  = "tcp"
+
+  source_security_group_id = aws_security_group.kong.id
+}
+
+resource "aws_security_group_rule" "internal-lb-egress-admin" {
+  security_group_id = aws_security_group.internal-lb.id
+
+  type      = "egress"
+  from_port = 8001
+  to_port   = 8001
+  protocol  = "tcp"
+
+  source_security_group_id = aws_security_group.kong.id
+}
+
+# Enterprise Edition
+resource "aws_security_group_rule" "manager-ingress-internal-lb" {
+  count = var.enable_ee ? 1 : 0
+
+  security_group_id = aws_security_group.kong.id
+
+  type      = "ingress"
+  from_port = 8002
+  to_port   = 8002
+  protocol  = "tcp"
+
+  source_security_group_id = aws_security_group.internal-lb.id
+}
+
+resource "aws_security_group_rule" "portal-gui-ingress-internal-lb" {
+  count = var.enable_ee ? 1 : 0
+
+  security_group_id = aws_security_group.kong.id
+
+  type      = "ingress"
+  from_port = 8003
+  to_port   = 8003
+  protocol  = "tcp"
+
+  source_security_group_id = aws_security_group.internal-lb.id
+}
+
+resource "aws_security_group_rule" "portal-ingress-internal-lb" {
+  count = var.enable_ee ? 1 : 0
+
+  security_group_id = aws_security_group.kong.id
+
+  type      = "ingress"
+  from_port = 8004
+  to_port   = 8004
+  protocol  = "tcp"
+
+  source_security_group_id = aws_security_group.internal-lb.id
+}
+
 resource "aws_security_group_rule" "internal-lb-ingress-admin" {
   count = var.enable_ee ? 1 : 0
 
@@ -435,28 +406,6 @@ resource "aws_security_group_rule" "internal-lb-ingress-portal" {
   protocol  = "tcp"
 
   cidr_blocks = var.portal_cidr_blocks
-}
-
-resource "aws_security_group_rule" "internal-lb-egress-proxy" {
-  security_group_id = aws_security_group.internal-lb.id
-
-  type      = "egress"
-  from_port = 8000
-  to_port   = 8000
-  protocol  = "tcp"
-
-  source_security_group_id = aws_security_group.kong.id
-}
-
-resource "aws_security_group_rule" "internal-lb-egress-admin" {
-  security_group_id = aws_security_group.internal-lb.id
-
-  type      = "egress"
-  from_port = 8001
-  to_port   = 8001
-  protocol  = "tcp"
-
-  source_security_group_id = aws_security_group.kong.id
 }
 
 resource "aws_security_group_rule" "internal-lb-egress-manager" {
