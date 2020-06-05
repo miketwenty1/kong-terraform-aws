@@ -258,6 +258,28 @@ resource "aws_security_group_rule" "kong-egress-https" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
+#elasti access outbound for kong
+resource "aws_security_group_rule" "elasti-egress-kong" {
+  security_group_id = aws_security_group.redis.id
+
+  type      = "egress"
+  from_port = 6379
+  to_port   = 6379
+  protocol  = "tcp"
+
+  source_security_group_id = aws_security_group.kong.id
+}
+#posgress access outbound for kong
+resource "aws_security_group_rule" "postgresql-egress-kong" {
+  security_group_id = aws_security_group.postgresql.id
+
+  type      = "egress"
+  from_port = 5432
+  to_port   = 5432
+  protocol  = "tcp"
+
+  source_security_group_id = aws_security_group.kong.id
+}
 # Load balancers
 # External
 resource "aws_security_group" "external-lb" {
