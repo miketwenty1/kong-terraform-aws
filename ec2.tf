@@ -28,9 +28,10 @@ resource "aws_launch_configuration" "kong" {
 resource "aws_autoscaling_group" "kong" {
   name                = format("%s-%s", var.service, var.environment)
   vpc_zone_identifier = data.aws_subnet_ids.private.ids
-
+  
   launch_configuration = aws_launch_configuration.kong.name
 
+  health_check_grace_period = var.health_check_grace_period
   desired_capacity          = var.asg_desired_capacity
   force_delete              = false
   health_check_grace_period = var.asg_health_check_grace_period

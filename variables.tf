@@ -528,3 +528,9 @@ variable "db_final_snapshot_identifier" {
   type        = string
   default     = ""
 }
+
+variable "health_check_grace_period" {
+  description = "how much time before healthchecks are performed to give cloud-init.sh more time"
+  default = 300
+  type = number
+}
