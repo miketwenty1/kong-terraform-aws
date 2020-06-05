@@ -96,7 +96,7 @@ resource "aws_security_group" "kong" {
 # Internal Admin Non Enterprise Edition - ACCESS
 resource "aws_security_group" "admin_service_lb_access" {
   description = "This security group will be sent to outputs and used with other AWS resources that need access to the internal admin lb."
-  name        = format("%s-%s-admin-service-lb", var.service, var.environment)
+  name        = format("%s-%s-admin-service-lb-outside-access", var.service, var.environment)
   vpc_id      = data.aws_vpc.vpc.id
 
   tags = merge(
@@ -112,7 +112,7 @@ resource "aws_security_group" "admin_service_lb_access" {
 # Internal Admin Non Enterprise Edition - ACCESS
 resource "aws_security_group" "admin_internal_lb" {
   description = "This is used internally to give LB access to kong"
-  name        = format("%s-%s-admin-service-lb", var.service, var.environment)
+  name        = format("%s-%s-admin-internal-lb-only", var.service, var.environment)
   vpc_id      = data.aws_vpc.vpc.id
 
   tags = merge(
