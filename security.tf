@@ -109,18 +109,72 @@ resource "aws_security_group" "admin_service_lb_access" {
     var.tags
   )
 }
+# Internal Admin Non Enterprise Edition - ACCESS
+resource "aws_security_group" "admin_internal_lb" {
+  description = "This is used internally to give LB access to kong"
+  name        = format("%s-%s-admin-service-lb", var.service, var.environment)
+  vpc_id      = data.aws_vpc.vpc.id
 
+  tags = merge(
+    {
+      "Name"        = format("%s-%s-admin-lb-only", var.service, var.environment),
+      "Environment" = var.environment,
+      "Description" = var.description,
+      "Service"     = var.service,
+    },
+    var.tags
+  )
+}
 ### rules for admin sgs
-resource "aws_security_group_rule" "ingress-admin-service-access" {
+resource "aws_security_group_rule" "ingress-for-admin-lb-for-the-outputs-sg" {
   count = var.enable_internal_admin_lb ? 1 : 0
 
-  security_group_id = aws_security_group.admin_service_lb_access.id
-  self              = true
+  security_group_id         = aws_security_group.admin_internal_lb.id
+  source_security_group_id  = aws_security_group.admin_service_lb_access.id
 
   type        = "ingress"
   from_port   = 443
   to_port     = 443
   protocol    = "tcp"
+}
+
+resource "aws_security_group_rule" "egress-admin-lb-to-kong" {
+  count = var.enable_internal_admin_lb ? 1 : 0
+
+  security_group_id         = aws_security_group.admin_internal_lb.id
+  source_security_group_id  = aws_security_group.kong.id
+
+  type        = "egress"
+  from_port   = 8001
+  to_port     = 8001
+  protocol    = "tcp"
+}
+
+### access rule for admin lb for outside clients
+resource "aws_security_group_rule" "ingress-admin-service-access-for-outside-resources" {
+  count = var.enable_internal_admin_lb ? 1 : 0
+
+  security_group_id         = aws_security_group.admin_service_lb_access.id
+  source_security_group_id  = aws_security_group.admin_internal_lb.id
+
+  type        = "egress"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+}
+
+### ingress access for lb to kong nodes through admin lb
+resource "aws_security_group_rule" "admin-ingress-bastion" {
+  count = var.enable_internal_admin_lb ? 1 : 0
+  
+  security_group_id         = aws_security_group.kong.id
+  source_security_group_id  = aws_security_group.admin_internal_lb.id
+
+  type      = "ingress"
+  from_port = 8001
+  to_port   = 8001
+  protocol  = "tcp"
+
 }
 
 resource "aws_security_group_rule" "admin-ingress-bastion" {
