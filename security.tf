@@ -164,9 +164,9 @@ resource "aws_security_group_rule" "ingress-admin-service-access-for-outside-res
 }
 
 ### ingress access for lb to kong nodes through admin lb
-resource "aws_security_group_rule" "admin-ingress-bastion" {
+resource "aws_security_group_rule" "admin-ingress-for-internal-lb-sg" {
   count = var.enable_internal_admin_lb ? 1 : 0
-  
+
   security_group_id         = aws_security_group.kong.id
   source_security_group_id  = aws_security_group.admin_internal_lb.id
 
