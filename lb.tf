@@ -331,7 +331,7 @@ resource "aws_lb" "internal-admin" {
   subnets  = data.aws_subnet_ids.private.ids
 
   security_groups = [
-    aws_security_group.admin_service_lb_access.id,
+    aws_security_group.admin_internal_lb.id,
     data.aws_security_group.default.id
   ]
 
