@@ -33,10 +33,10 @@ resource "aws_cloudwatch_metric_alarm" "http-code-4xx-count" {
   evaluation_periods  = 1
   metric_name         = "HTTPCode_Target_4XX_Count"
   namespace           = "AWS/ApplicationELB"
-  period              = 60
+  period              = 3600
   statistic           = "Minimum"
   threshold           = var.http_4xx_count
-  treat_missing_data  = "ignore"
+  treat_missing_data  = "notBreaching"
 
   actions_enabled   = "true"
   alarm_actions     = var.cloudwatch_actions
@@ -56,10 +56,10 @@ resource "aws_cloudwatch_metric_alarm" "http-code-5xx-count" {
   evaluation_periods  = 1
   metric_name         = "HTTPCode_Target_5XX_Count"
   namespace           = "AWS/ApplicationELB"
-  period              = 60
+  period              = 3600
   statistic           = "Minimum"
   threshold           = var.http_5xx_count
-  treat_missing_data  = "ignore"
+  treat_missing_data  = "notBreaching"
 
   actions_enabled   = "true"
   alarm_actions     = var.cloudwatch_actions
