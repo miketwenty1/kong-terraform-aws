@@ -244,7 +244,7 @@ variable "ce_pkg" {
   description = "Filename of the Community Edition package"
   type        = string
 
-  default = "kong-2.1.4.bionic.amd64.deb"
+  default = "kong-1.5.0.bionic.amd64.deb"
 }
 
 # Load Balancer settings
