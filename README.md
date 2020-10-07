@@ -1,3 +1,5 @@
+# The main feature of this fork: It supports admin port locked down to a specific ELB and uses a newer version of kong.
+
 # Kong Cluster Terraform Module for AWS
 
 [Kong API Gateway](https://konghq.com/) is an API gateway microservices
@@ -317,14 +319,7 @@ Prerequisites:
 `map(string)`</td>
 <td>
 
-```json
-{
-  "us-east-1": "ami-7029320f",
-  "us-east-2": "ami-0350efe0754b8e179",
-  "us-west-1": "ami-657f9006",
-  "us-west-2": "ami-59694f21"
-}
-```
+check variables.tf
 </td>
 <td>no</td>
 </tr>
