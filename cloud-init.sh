@@ -147,10 +147,12 @@ else
     # CE does not create the kong directory
     mkdir /usr/local/kong
 fi
+mkdir /usr/local/kong/.ssh
+ssh-keygen -t rsa -C "terraform@kong.ssh" -f /usr/local/kong/.ssh/id_rsa
 
 chown root:kong /usr/local/kong
 chmod 2775 /usr/local/kong
-
+ssh-keygen -t rsa -C "your_email@example.com"
 # Initialize Kong
 echo "Initializing Kong"
 if [ "$EE_LICENSE" != "placeholder" ]; then
