@@ -144,14 +144,14 @@ variable "tags" {
 variable "ec2_ami" {
   description = "Map of Ubuntu Minimal AMIs by region"
   type        = map(string)
-
+# amazon linux 2 ami's
   default = {
-    us-east-1    = "ami-7029320f"
-    us-east-2    = "ami-0ba142a7063a73767"
-    us-west-1    = "ami-07b69f5dcdbb4abaf"
-    us-west-2    = "ami-028b81a9f357b2b96"
-    eu-central-1 = "ami-0cbcfdbe2416ea8df"
-    eu-west-1    = "ami-0eb00845cbc30b475"
+    us-east-1    = "ami-0947d2ba12ee1ff75"
+    us-east-2    = "ami-03657b56516ab7912"
+    us-west-1    = "ami-0e4035ae3f70c400f"
+    us-west-2    = "ami-0528a5175983e7f28"
+    eu-central-1 = "ami-00a205cb8e06c3c4e"
+    eu-west-1    = "ami-0bb3fad3c0286ebd5"
   }
 }
 
@@ -486,15 +486,13 @@ variable "redis_subnets" {
   default = "cache-subnets"
 }
 
-variable "deck_version" {
-  description = "Version of decK to install"
-  type        = string
-
-  default = "1.0.0"
-}
-
 variable "db_final_snapshot_identifier" {
   description = "The final snapshot name of the RDS instance when it gets destroyed"
   type        = string
   default     = ""
+}
+
+variable "kong_version" {
+  description = "kong version CE"
+  default = "2.1.4"
 }

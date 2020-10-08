@@ -10,7 +10,7 @@ resource "aws_lb_target_group" "external" {
   health_check {
     healthy_threshold   = var.health_check_healthy_threshold
     interval            = var.health_check_interval
-    path                = "/status"
+    path                = "/upstreams/my_upstream/targets/healthy"
     port                = 8000
     timeout             = var.health_check_timeout
     unhealthy_threshold = var.health_check_unhealthy_threshold
@@ -78,7 +78,7 @@ resource "aws_lb_target_group" "internal" {
   health_check {
     healthy_threshold   = var.health_check_healthy_threshold
     interval            = var.health_check_interval
-    path                = "/status"
+    path                = "/upstreams/my_upstream/targets/healthy"
     port                = 8000
     timeout             = var.health_check_timeout
     unhealthy_threshold = var.health_check_unhealthy_threshold
