@@ -11,36 +11,37 @@ aws_get_parameter() {
 
 # yummy
 yum update -y
-wget https://kong.bintray.com/kong-rpm/amazonlinux/amazonlinux2/kong-${KONG_VERSION}.aws.amd64.rpm -O bintray-kong-kong-rpm.repo
-sudo mv bintray-kong-kong-rpm.repo /etc/yum.repos.d/
-sudo yum update -y
-sudo yum install -y kong
+wget https://bintray.com/kong/kong-rpm/rpm -O bintray-kong-kong-rpm.repo
+sed -i -e 's/baseurl.*/&\/amazonlinux\/amazonlinux2'/ bintray-kong-kong-rpm.repo
+mv bintray-kong-kong-rpm.repo /etc/yum.repos.d/
+yum update -y
+yum install -y kong-${KONG_VERSION}
 
 # permissions
 chmod 640 /etc/kong/kong.conf
-chgrp ec2-user /etc/kong/kong.conf
-chmod 744 /etc/sv/kong/run /etc/sv/kong/log/run
-chown root:ec2-user /usr/local/kong
+chgrp kong /etc/kong/kong.conf 
+chgrp -R kong /usr/local/kong
+chmod -R 770 /usr/local/kong
+chown root:kong /usr/local/kong
 chmod 2775 /usr/local/kong
 
 # limits
 cat <<'EOF' >> /etc/security/limits.conf
-ec2-user         hard    nofile          65536
-ec2-user         soft    nofile          65536
+kong         hard    nofile          65536
+kong         soft    nofile          65536
 EOF
 
 # Setup database vars
 echo "Setting up Kong database"
 DB_HOST=$(aws_get_parameter "db/host")
 DB_NAME=$(aws_get_parameter "db/name")
-DB_PASSWORD=$(aws_get_parameter "db/password")
+DB_PASSWORD=$(aws_get_parameter "db/password/master")
 
 
 # Setup Configuration file
 cat <<EOF > /etc/kong/kong.conf
 # kong.conf, Kong configuration file
 # Written by <tidwell@zebedee.io>
-#
 
 # Database settings
 database = postgres 
@@ -77,7 +78,7 @@ cat <<'EOF' > /etc/logrotate.d/kong
   compress
   missingok
   notifempty
-  create 640 ec2-user  ec2-user 
+  create 640 kong  kong 
   sharedscripts
 
   postrotate
@@ -87,10 +88,10 @@ cat <<'EOF' > /etc/logrotate.d/kong
 EOF
 
 # start kong
-kong migrations bootstrap [-c /etc/kong/kong.conf]
-kong migrations up
-kong migrations finish
-kong start [-c /etc/kong/kong.conf]
+/usr/local/bin/kong migrations bootstrap [-c /etc/kong/kong.conf]
+/usr/local/bin/kong migrations up
+/usr/local/bin/kong migrations finish
+runuser -l kong -c '/usr/local/bin/kong start [-c /etc/kong/kong.conf]'
 
 # Verify Admin API is up
 RUNNING=0
