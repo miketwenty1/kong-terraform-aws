@@ -138,28 +138,6 @@ variable "tags" {
   default = {}
 }
 
-# Enterprise Edition
-variable "enable_ee" {
-  description = "Boolean to enable Kong Enterprise Edition settings"
-  type        = string
-
-  default = false
-}
-
-variable "ee_bintray_auth" {
-  description = "Bintray authentication for the Enterprise Edition download (Format: username:apikey)"
-  type        = string
-
-  default = "placeholder"
-}
-
-variable "ee_license" {
-  description = "Enterprise Edition license key (JSON format)"
-  type        = string
-
-  default = "placeholder"
-}
-
 # EC2 settings
 
 # https://wiki.ubuntu.com/Minimal
@@ -232,14 +210,6 @@ variable "asg_health_check_grace_period" {
   default = 300
 }
 
-# Kong packages
-variable "ee_pkg" {
-  description = "Filename of the Enterprise Edition package"
-  type        = string
-
-  default = "kong-enterprise-edition-1.3.0.1.bionic.all.deb "
-}
-
 variable "ce_pkg" {
   description = "Filename of the Community Edition package"
   type        = string
@@ -263,7 +233,7 @@ variable "enable_internal_lb" {
 }
 
 variable "enable_internal_admin_lb" {
-  description = "Boolean to enable/create the internal load balancer for the forward proxy for admin port - Do NOT enable this if also using enterprise edition ee"
+  description = "Boolean to enable/create the internal load balancer for the forward proxy for admin port"
   type        = bool
 
   default = false

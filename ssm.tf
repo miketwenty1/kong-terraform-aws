@@ -17,43 +17,6 @@ resource "aws_kms_alias" "kong" {
   target_key_id = aws_kms_key.kong.key_id
 }
 
-resource "aws_ssm_parameter" "ee-bintray-auth" {
-  name  = format("/%s/%s/ee/bintray-auth", var.service, var.environment)
-  type  = "SecureString"
-  value = var.ee_bintray_auth
-
-  key_id = aws_kms_alias.kong.target_key_arn
-
-  lifecycle {
-    ignore_changes = [value]
-  }
-}
-
-resource "aws_ssm_parameter" "ee-license" {
-  name  = format("/%s/%s/ee/license", var.service, var.environment)
-  type  = "SecureString"
-  value = var.ee_license
-
-  key_id = aws_kms_alias.kong.target_key_arn
-
-  depends_on = [aws_kms_alias.kong]
-  lifecycle {
-    ignore_changes = [value]
-  }
-}
-
-resource "aws_ssm_parameter" "ee-admin-token" {
-  name  = format("/%s/%s/ee/admin/token", var.service, var.environment)
-  type  = "SecureString"
-  value = random_string.admin_token.result
-
-  key_id = aws_kms_alias.kong.target_key_arn
-
-  lifecycle {
-    ignore_changes = [value]
-  }
-}
-
 resource "aws_ssm_parameter" "db-host" {
   name = format("/%s/%s/db/host", var.service, var.environment)
   type = "String"
