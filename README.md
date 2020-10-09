@@ -61,6 +61,8 @@ By default, the following resources will be provisioned:
 - An internal load balancer (HTTP and HTTPS)
   - HTTP:80 - Kong Proxy
   - HTTPS:443 - Kong Proxy
+- admin load balancer (HTTP and HTTPS)
+  - HTTPS:443 - Kong Proxy
 - Security groups granting least privilege access to resources
 - An IAM instance profile for access to Kong specific SSM Parameter Store 
   metadata and secrets
