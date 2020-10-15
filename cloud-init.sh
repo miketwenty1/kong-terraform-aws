@@ -18,8 +18,7 @@ yum update -y
 yum install -y kong-${KONG_VERSION}
 
 # permissions
-chmod 640 /etc/kong/kong.conf
-chgrp kong /etc/kong/kong.conf 
+
 chgrp -R kong /usr/local/kong
 chmod -R 770 /usr/local/kong
 chown root:kong /usr/local/kong
@@ -33,9 +32,35 @@ EOF
 
 # Setup database vars
 echo "Setting up Kong database"
+PGPASSWORD=$(aws_get_parameter "db/password/master")
 DB_HOST=$(aws_get_parameter "db/host")
 DB_NAME=$(aws_get_parameter "db/name")
-DB_PASSWORD=$(aws_get_parameter "db/password/master")
+DB_PASSWORD=$(aws_get_parameter "db/password")
+
+export PGPASSWORD
+
+RESULT=$(psql --host $DB_HOST --username root \
+    --tuples-only --no-align postgres \
+    <<EOF
+SELECT 1 FROM pg_roles WHERE rolname='${DB_USER}'
+EOF
+)
+
+if [ $? != 0 ]; then
+    echo "Error: Database connection failed, please configure manually"
+    exit 1
+fi
+
+echo $RESULT | grep -q 1
+if [ $? != 0 ]; then
+    psql --host $DB_HOST --username root postgres <<EOF
+CREATE USER ${DB_USER} WITH PASSWORD '$DB_PASSWORD';
+GRANT ${DB_USER} TO root;
+CREATE DATABASE $DB_NAME OWNER = ${DB_USER};
+EOF
+fi
+unset PGPASSWORD
+
 
 
 # Setup Configuration file
@@ -46,7 +71,7 @@ cat <<EOF > /etc/kong/kong.conf
 # Database settings
 database = postgres 
 pg_host = $DB_HOST
-pg_user = root
+pg_user = ${DB_USER}
 pg_password = $DB_PASSWORD
 pg_database = $DB_NAME
 
@@ -66,6 +91,8 @@ proxy_listen = 0.0.0.0:8000
 admin_listen = 0.0.0.0:8001
 EOF
 
+chmod 640 /etc/kong/kong.conf
+chgrp kong /etc/kong/kong.conf
 
 # Initialize Kong
 echo "Initializing Kong"
@@ -91,6 +118,7 @@ EOF
 /usr/local/bin/kong migrations bootstrap [-c /etc/kong/kong.conf]
 /usr/local/bin/kong migrations up
 /usr/local/bin/kong migrations finish
+
 runuser -l kong -c '/usr/local/bin/kong start [-c /etc/kong/kong.conf]'
 
 # Verify Admin API is up
