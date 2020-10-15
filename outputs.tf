@@ -25,6 +25,10 @@ output "lb_endpoint_external" {
   value       = coalesce(aws_lb.external.*.dns_name)
   description = "The external load balancer endpoint"
 }
+output "lb_external_arn" {
+  value       = coalesce(aws_lb.external.*.arn)
+  description = "The external load balancer endpoint"
+}
 
 output "lb_endpoint_internal" {
   value       = coalesce(aws_lb.internal.*.dns_name)
