@@ -5,7 +5,7 @@
 - only Community Edition (CE) only
 - Linux 2 ami's used instead of ubuntu
 
-PR's welcomed. check for 
+PR's welcomed.
 ## Example
 
 main.tf:
