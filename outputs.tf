@@ -26,7 +26,7 @@ output "lb_endpoint_external" {
   description = "The external load balancer endpoint"
 }
 output "lb_external_arn" {
-  value       = coalesce(aws_lb.external.*.arn)
+  value       = coalesce(aws_lb.external.*.arn)[0]
   description = "The external load balancer endpoint"
 }
 
