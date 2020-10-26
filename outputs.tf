@@ -44,3 +44,8 @@ output "admin_service_lb_sg" {
   value       = coalesce(aws_security_group.admin_service_lb_access.id) 
   description = "The internal load balancer security group any AWS resource that wants access to the admin load balancer will need this sg"
 }
+output "admin_service_lb_sg" {
+  value       = coalesce(aws_security_group.direct_admin_access.id) 
+  description = "The security group any AWS resource that wants access directly to kong"
+}
+
