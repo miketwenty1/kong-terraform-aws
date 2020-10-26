@@ -112,7 +112,7 @@ resource "aws_security_group" "admin_service_lb_access" {
 # Internal Admin Non Enterprise Edition - DIRECT ACCESS
 resource "aws_security_group" "direct_admin_access" {
   description = "This security group will be sent to outputs and used with other AWS resources that need access directly to admin."
-  name        = format("%s-%s-admin-service-lb-outside-access", var.service, var.environment)
+  name        = format("%s-%s-direct-admin-access", var.service, var.environment)
   vpc_id      = data.aws_vpc.vpc.id
 
   tags = merge(
