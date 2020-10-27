@@ -1,6 +1,6 @@
 # Active Supported fork 
 # Main Differences
-- supports Kong 2.x (check tags) "kong-2.1.4"
+- supports Kong 2.x (check tags) "kong-2.2.0"
 - admin only exposed via an admin ELB for dns access and sg security
 - only Community Edition (CE) only
 - Linux 2 ami's used instead of ubuntu
