@@ -37,6 +37,9 @@ DB_HOST=$(aws_get_parameter "db/host")
 DB_NAME=$(aws_get_parameter "db/name")
 DB_PASSWORD=$(aws_get_parameter "db/password")
 
+echo TEST param config
+echo $DB_NAME
+
 export PGPASSWORD
 
 RESULT=$(psql --host $DB_HOST --username root \
