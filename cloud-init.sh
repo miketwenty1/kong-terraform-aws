@@ -136,3 +136,6 @@ if [ $RUNNING = 0 ]; then
   echo "Cannot connect to admin API, avoiding further configuration."
   exit 1
 fi
+
+# install prometheus plugin
+curl http://localhost:8001/plugins -d name=prometheus
