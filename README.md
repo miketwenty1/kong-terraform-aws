@@ -4,6 +4,7 @@
 - admin only exposed via an admin ELB for dns access and sg security
 - only Community Edition (CE) only
 - Linux 2 ami's used instead of ubuntu
+- prometheus plugin enabled by default
 
 PR's welcomed.
 ## Example

@@ -494,5 +494,5 @@ variable "db_final_snapshot_identifier" {
 
 variable "kong_version" {
   description = "kong version CE"
-  default = "2.1.4"
+  default = "2.2.0"
 }
