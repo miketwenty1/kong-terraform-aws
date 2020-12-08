@@ -12,7 +12,7 @@ PR's welcomed.
 main.tf:
 ```
 module "kong" {
-  source = "github.com/miketwenty1/kong-terraform-aws?ref=kong-2.1.4"
+  source = "github.com/miketwenty1/kong-terraform-aws?ref=1.0.0"
   vpc                           = "${var.env}_vpc"
   environment                   = "dev"
   redis_subnets                 = aws_elasticache_subnet_group.elasti_sub.name
