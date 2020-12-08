@@ -10,11 +10,11 @@ resource "aws_lb_target_group" "external" {
   health_check {
     healthy_threshold   = var.health_check_healthy_threshold
     interval            = var.health_check_interval
-    path                = "/"
-    port                = 8000
+    path                = "/status"
+    port                = 8001
     timeout             = var.health_check_timeout
     unhealthy_threshold = var.health_check_unhealthy_threshold
-    matcher             = "404,200"
+    matcher             = "200"
   }
 
   tags = merge(
@@ -79,11 +79,11 @@ resource "aws_lb_target_group" "internal" {
   health_check {
     healthy_threshold   = var.health_check_healthy_threshold
     interval            = var.health_check_interval
-    path                = "/"
-    port                = 8000
+    path                = "/status"
+    port                = 8001
     timeout             = var.health_check_timeout
     unhealthy_threshold = var.health_check_unhealthy_threshold
-    matcher             = "404,200"
+    matcher             = "200"
   }
 
   tags = merge(
@@ -187,11 +187,11 @@ resource "aws_lb_target_group" "internal-admin" {
   health_check {
     healthy_threshold   = var.health_check_healthy_threshold
     interval            = var.health_check_interval
-    path                = "/"
+    path                = "/status"
     port                = 8001
     timeout             = var.health_check_timeout
     unhealthy_threshold = var.health_check_unhealthy_threshold
-    matcher             = "404,200"
+    matcher             = "200"
   }
 
   stickiness {
