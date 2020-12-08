@@ -1,4 +1,3 @@
-# Active Supported fork 
 # Main Differences
 - supports Kong 2.x (check tags) "kong-2.2.0"
 - admin only exposed via an admin ELB for dns access and sg security
