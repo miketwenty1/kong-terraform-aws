@@ -1,9 +1,9 @@
-# Main Differences
+# Key Info
 - supports Kong 2.x (check tags) "kong-2.2.0"
-- admin only exposed via an admin ELB for dns access and sg security
+- admin only exposed via an admin ELB for dns access and sg security, admin port used for internal and external for lb healthcheck, but not listened on.
 - only Community Edition (CE) only
 - Linux 2 ami's used instead of ubuntu
-- prometheus plugin enabled by default
+- prometheus plugin enabled by default (prometheus not required)
 
 PR's welcomed.
 ## Example
