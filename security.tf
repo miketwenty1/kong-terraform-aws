@@ -237,8 +237,8 @@ resource "aws_security_group_rule" "proxy-ingress-external-lb" {
 
   source_security_group_id = aws_security_group.external-lb.id
 }
-// for healthcheck 
-resource "aws_security_group_rule" "proxy-ingress-external-lb" {
+// for healthcheck using admin /status
+resource "aws_security_group_rule" "proxy-ingress-external-lb-health" {
   security_group_id = aws_security_group.kong.id
 
   type      = "ingress"
@@ -260,8 +260,8 @@ resource "aws_security_group_rule" "proxy-ingress-internal-lb" {
 
   source_security_group_id = aws_security_group.internal-lb.id
 }
-// for healthcheck
-resource "aws_security_group_rule" "proxy-ingress-internal-lb" {
+// for healthcheck using admin /status
+resource "aws_security_group_rule" "proxy-ingress-internal-lb-health" {
   security_group_id = aws_security_group.kong.id
 
   type      = "ingress"
