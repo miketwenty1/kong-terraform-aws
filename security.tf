@@ -237,6 +237,17 @@ resource "aws_security_group_rule" "proxy-ingress-external-lb" {
 
   source_security_group_id = aws_security_group.external-lb.id
 }
+// for healthcheck 
+resource "aws_security_group_rule" "proxy-ingress-external-lb" {
+  security_group_id = aws_security_group.kong.id
+
+  type      = "ingress"
+  from_port = 8001
+  to_port   = 8001
+  protocol  = "tcp"
+
+  source_security_group_id = aws_security_group.external-lb.id
+}
 
 # Internal load balancer access
 resource "aws_security_group_rule" "proxy-ingress-internal-lb" {
@@ -249,7 +260,17 @@ resource "aws_security_group_rule" "proxy-ingress-internal-lb" {
 
   source_security_group_id = aws_security_group.internal-lb.id
 }
+// for healthcheck
+resource "aws_security_group_rule" "proxy-ingress-internal-lb" {
+  security_group_id = aws_security_group.kong.id
 
+  type      = "ingress"
+  from_port = 8001
+  to_port   = 8001
+  protocol  = "tcp"
+
+  source_security_group_id = aws_security_group.internal-lb.id
+}
 # HTTP outbound for Debian packages
 resource "aws_security_group_rule" "kong-egress-http" {
   security_group_id = aws_security_group.kong.id
