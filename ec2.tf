@@ -2,7 +2,7 @@ resource "aws_launch_configuration" "kong" {
   name_prefix          = format("%s-%s-", var.service, var.environment)
   image_id             = var.ec2_ami[data.aws_region.current.name]
   instance_type        = var.ec2_instance_type
-  iam_instance_profile = aws_iam_instance_profile.kong.name
+  iam_instance_profile = aws_iam_instance_profile.kong.id
   key_name             = var.ec2_key_name
 
   security_groups = [
