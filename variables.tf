@@ -369,7 +369,7 @@ variable "db_engine_version" {
   description = "Database engine version"
   type        = string
 
-  default = "11.8"
+  default = "11.10"
 }
 
 variable "db_engine_mode" {
